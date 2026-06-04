@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberSafe — Cybersecurity Awareness | Built by Martin Sigala</title>
+<style>
+:root[data-theme="dark"] {
+  --bg: #0d1117; --surface: #161b22; --surface2: #1f2937; --border: #30363d;
+  --accent: #58a6ff; --accent2: #3fb950; --warn: #f85149; --yellow: #e3b341;
+  --text: #e6edf3; --muted: #8b949e; --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+:root[data-theme="light"] {
+  --bg: #f6f8fa; --surface: #ffffff; --surface2: #f0f2f5; --border: #d0d7de;
+  --accent: #0969da; --accent2: #1a7f37; --warn: #cf222e; --yellow: #9a6700;
+  --text: #1f2328; --muted: #656d76; --card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+
+/* ── NAV ── */
+nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 62px; position: sticky; top: 0; z-index: 200; }
+.nav-brand { font-weight: 800; font-size: 1.2rem; color: var(--accent); display: flex; align-items: center; gap: 8px; cursor: pointer; flex-shrink: 0; }
+.nav-links { display: flex; gap: 1.4rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; cursor: pointer; transition: color 0.2s; white-space: nowrap; }
+.nav-links a:hover, .nav-links a.active { color: var(--text); }
+.nav-right { display: flex; align-items: center; gap: 0.8rem; }
+.theme-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.theme-btn:hover { background: var(--border); }
+.search-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+.hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--text); font-size: 1.4rem; }
+.mobile-menu { display: none; position: fixed; inset: 62px 0 0 0; background: var(--surface); z-index: 150; padding: 1.5rem 2rem; flex-direction: column; gap: 1.2rem; border-bottom: 1px solid var(--border); }
+.mobile-menu.open { display: flex; }
+.mobile-menu a { color: var(--text); text-decoration: none; font-size: 1.1rem; cursor: pointer; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+
+/* ── SEARCH OVERLAY ── */
+.search-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; align-items: flex-start; justify-content: center; padding-top: 100px; }
+.search-overlay.open { display: flex; }
+.search-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 580px; overflow: hidden; box-shadow: var(--card-shadow); }
+.search-input-wrap { display: flex; align-items: center; padding: 1rem 1.2rem; gap: 0.7rem; border-bottom: 1px solid var(--border); }
+.search-input-wrap input { flex: 1; background: none; border: none; outline: none; font-size: 1.05rem; color: var(--text); }
+.search-input-wrap input::placeholder { color: var(--muted); }
+.search-results { max-height: 360px; overflow-y: auto; padding: 0.5rem; }
+.search-result-item { padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; }
+.search-result-item:hover { background: var(--surface2); }
+.search-result-item strong { display: block; font-size: 0.9rem; }
+.search-result-item span { color: var(--muted); font-size: 0.8rem; }
+.search-empty { padding: 2rem; text-align: center; color: var(--muted); }
+
+/* ── PAGES ── */
+.page { display: none; animation: fadeIn 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── HERO ── */
+.hero { text-align: center; padding: 5rem 2rem 2.5rem; max-width: 700px; margin: 0 auto; }
+.hero-badge { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--accent); padding: 4px 14px; border-radius: 50px; font-size: 0.78rem; display: inline-block; margin-bottom: 1.4rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.hero h1 { font-size: clamp(2rem,5vw,3.2rem); font-weight: 800; margin-bottom: 1rem; line-height: 1.2; }
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--muted); font-size: 1.05rem; margin-bottom: 2rem; }
+.hero-btns { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+
+/* ── TIP OF DAY ── */
+.tip-of-day { max-width: 680px; margin: 0 auto 1.5rem; padding: 0 2rem; }
+.tip-card { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--yellow); border-radius: var(--radius,12px); padding: 1rem 1.2rem; display: flex; gap: 0.8rem; align-items: flex-start; }
+.tip-card .tip-icon { font-size: 1.3rem; flex-shrink: 0; }
+.tip-card .tip-body strong { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--yellow); display: block; margin-bottom: 2px; }
+.tip-card .tip-body p { font-size: 0.88rem; color: var(--muted); }
+
+/* ── STATS ── */
+.stats { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; padding: 1.5rem 2rem 2rem; max-width: 700px; margin: 0 auto; }
+.stat { text-align: center; }
+.stat-num { font-size: 2.1rem; font-weight: 800; color: var(--accent); }
+.stat-label { font-size: 0.78rem; color: var(--muted); }
+
+/* ── PROGRESS DASHBOARD ── */
+.progress-dashboard { max-width: 900px; margin: 0 auto; padding: 0 2rem 2rem; }
+.dash-title { font-size: 1rem; font-weight: 700; color: var(--muted); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
+.dash-cards { display: flex; gap: 1rem; flex-wrap: wrap; }
+.dash-card { flex: 1; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+.dash-card .dc-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; }
+.dash-card .dc-val { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+.dash-card .dc-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+/* ── SECTIONS ── */
+.section { padding: 0 2rem 2rem; max-width: 900px; margin: 0 auto; }
+.section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; }
+.courses-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 1.1rem; }
+.course-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.4rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s; position: relative; overflow: hidden; }
+.course-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--card-shadow); }
+.course-card.completed { border-color: var(--accent2); }
+.course-icon { font-size: 2rem; margin-bottom: 0.7rem; }
+.course-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.course-card p { color: var(--muted); font-size: 0.84rem; }
+.course-meta { display: flex; gap: 0.8rem; margin-top: 0.9rem; font-size: 0.73rem; color: var(--muted); align-items: center; }
+.badge { background: rgba(63,185,80,0.1); color: var(--accent2); border: 1px solid rgba(63,185,80,0.25); padding: 2px 8px; border-radius: 50px; font-size: 0.7rem; }
+.badge.warn { background: rgba(248,81,73,0.1); color: var(--warn); border-color: rgba(248,81,73,0.25); }
+.badge.yellow { background: rgba(227,179,65,0.1); color: var(--yellow); border-color: rgba(227,179,65,0.25); }
+.completed-ribbon { position: absolute; top: 10px; right: 10px; background: var(--accent2); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 50px; }
+
+/* ── BUTTONS ── */
+.btn { background: var(--accent); color: #fff; border: none; padding: 11px 24px; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: inline-flex; align-items: center; gap: 6px; }
+[data-theme="light"] .btn { color: #fff; }
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+.btn-green { background: var(--accent2); color: #fff; }
+.btn-sm { padding: 7px 16px; font-size: 0.82rem; }
+
+/* ── COURSE PAGE ── */
+.course-content { max-width: 720px; margin: 0 auto; padding: 2rem; }
+.back-btn { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.88rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; padding: 0; }
+.back-btn:hover { text-decoration: underline; }
+.course-header h1 { font-size: 1.7rem; font-weight: 800; }
+.course-header p { color: var(--muted); margin-top: 0.4rem; }
+.progress-bar { background: var(--border); border-radius: 50px; height: 5px; margin: 1.2rem 0; }
+.progress-fill { background: var(--accent); height: 100%; border-radius: 50px; transition: width 0.4s; }
+.lesson { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+.lesson h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--accent); }
+.lesson p { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.7rem; }
+.lesson ul { color: var(--muted); font-size: 0.9rem; padding-left: 1.2rem; }
+.lesson ul li { margin-bottom: 0.4rem; }
+.tip-box { background: rgba(88,166,255,0.07); border-left: 3px solid var(--accent); padding: 0.9rem 1rem; border-radius: 0 8px 8px 0; margin-top: 1rem; font-size: 0.84rem; color: var(--text); }
+.warn-box { background: rgba(248,81,73,0.07); border-left: 3px solid var(--warn); padding: 0.9rem 1rem; border-radius: 0 8px 8px 0; margin-top: 1rem; font-size: 0.84rem; color: var(--text); }
+.nav-buttons { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 0.5rem; }
+.share-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.share-row span { font-size: 0.8rem; color: var(--muted); }
+.share-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 50px; padding: 5px 14px; font-size: 0.78rem; cursor: pointer; transition: background 0.15s; color: var(--text); text-decoration: none; display: inline-block; }
+.share-chip:hover { background: var(--border); }
+
+/* ── QUIZ ── */
+.quiz-wrap { max-width: 680px; margin: 0 auto; padding: 2rem; }
+.quiz-header { text-align: center; margin-bottom: 2rem; }
+.quiz-header h1 { font-size: 1.7rem; font-weight: 800; }
+.quiz-header p { color: var(--muted); margin-top: 0.4rem; }
+.question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+.q-number { font-size: 0.73rem; color: var(--muted); margin-bottom: 0.5rem; }
+.q-text { font-size: 1.02rem; font-weight: 600; margin-bottom: 1.1rem; }
+.options { display: flex; flex-direction: column; gap: 0.65rem; }
+.option { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.82rem 1rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 0.88rem; text-align: left; color: var(--text); }
+.option:hover:not(:disabled) { border-color: var(--accent); background: rgba(88,166,255,0.07); }
+.option.correct { border-color: var(--accent2); background: rgba(63,185,80,0.1); }
+.option.wrong { border-color: var(--warn); background: rgba(248,81,73,0.1); }
+.option:disabled { cursor: default; }
+.feedback { margin-top: 0.9rem; padding: 0.82rem 1rem; border-radius: 8px; font-size: 0.88rem; }
+.feedback.correct { background: rgba(63,185,80,0.1); color: var(--accent2); }
+.feedback.wrong { background: rgba(248,81,73,0.1); color: var(--warn); }
+.quiz-nav { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+.score-card { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 3rem 2rem; }
+.score-big { font-size: 4rem; font-weight: 800; color: var(--accent); }
+.score-label { color: var(--muted); margin-bottom: 1.2rem; }
+.score-msg { font-size: 1.05rem; font-weight: 600; margin-bottom: 2rem; }
+
+/* ── CERTIFICATE ── */
+.cert-page { max-width: 780px; margin: 0 auto; padding: 2rem; }
+.cert-locked { text-align: center; padding: 4rem 2rem; }
+.cert-locked h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
+.cert-locked p { color: var(--muted); margin-bottom: 1.5rem; }
+.checklist { text-align: left; max-width: 360px; margin: 0 auto 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
+.checklist-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0; font-size: 0.9rem; color: var(--muted); }
+.checklist-item.done { color: var(--accent2); }
+.cert-frame { background: var(--surface); border: 2px solid var(--accent); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
+.cert-frame::before { content: ''; position: absolute; inset: 8px; border: 1px solid var(--border); border-radius: 12px; pointer-events: none; }
+.cert-watermark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12rem; opacity: 0.03; pointer-events: none; user-select: none; }
+.cert-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.cert-org { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1.5rem; }
+.cert-presents { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.3rem; }
+.cert-name { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin-bottom: 1rem; font-style: italic; }
+.cert-body { font-size: 0.9rem; color: var(--muted); max-width: 480px; margin: 0 auto 1.5rem; }
+.cert-title-line { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+.cert-date { font-size: 0.78rem; color: var(--muted); margin-top: 1.5rem; }
+.cert-badges { display: flex; justify-content: center; gap: 1.5rem; margin: 1.5rem 0; flex-wrap: wrap; }
+.cert-badge { text-align: center; }
+.cert-badge .cb-icon { font-size: 1.8rem; }
+.cert-badge .cb-label { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+.cert-actions { display: flex; gap: 0.8rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+
+/* ── RESOURCES ── */
+.resources-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 1rem; }
+.resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; display: flex; gap: 1rem; align-items: flex-start; transition: border-color 0.2s; }
+.resource-card:hover { border-color: var(--accent); }
+.rc-icon { font-size: 1.6rem; flex-shrink: 0; }
+.rc-body a { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.92rem; }
+.rc-body a:hover { text-decoration: underline; }
+.rc-body p { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+/* ── GLOSSARY ── */
+.glossary-search { width: 100%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.95rem; color: var(--text); outline: none; margin-bottom: 1.2rem; transition: border-color 0.2s; }
+.glossary-search:focus { border-color: var(--accent); }
+.glossary-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.glossary-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.2rem; }
+.glossary-item dt { font-weight: 700; font-size: 0.95rem; color: var(--accent); }
+.glossary-item dd { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+
+/* ── ABOUT PAGE ── */
+.about-wrap { max-width: 820px; margin: 0 auto; padding: 2.5rem 2rem; }
+.about-hero { display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2.5rem; flex-wrap: wrap; }
+.about-avatar { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; flex-shrink: 0; border: 3px solid var(--border); }
+.about-intro h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 0.3rem; }
+.about-intro .about-title { color: var(--accent); font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+.about-intro p { color: var(--muted); font-size: 0.9rem; max-width: 560px; }
+.about-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+.about-tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 50px; padding: 3px 12px; font-size: 0.75rem; color: var(--muted); }
+.about-tag.blue { border-color: rgba(88,166,255,0.4); color: var(--accent); background: rgba(88,166,255,0.07); }
+.about-section { margin-bottom: 2rem; }
+.about-section h2 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.exp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.3rem 1.4rem; margin-bottom: 0.9rem; display: flex; gap: 1.1rem; align-items: flex-start; }
+.exp-card:hover { border-color: var(--accent); }
+.exp-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 2px; }
+.exp-body { flex: 1; }
+.exp-body .exp-role { font-weight: 700; font-size: 0.97rem; }
+.exp-body .exp-org { color: var(--accent); font-size: 0.85rem; font-weight: 600; }
+.exp-body .exp-org a { color: var(--accent); text-decoration: none; }
+.exp-body .exp-org a:hover { text-decoration: underline; }
+.exp-body .exp-date { color: var(--muted); font-size: 0.75rem; margin: 3px 0 6px; }
+.exp-body .exp-desc { color: var(--muted); font-size: 0.84rem; }
+.exp-body .exp-desc li { margin-bottom: 3px; }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; }
+.skill-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; display: flex; align-items: center; gap: 0.7rem; }
+.skill-card .sk-icon { font-size: 1.4rem; }
+.skill-card .sk-label { font-size: 0.85rem; font-weight: 600; }
+.skill-card .sk-sub { font-size: 0.72rem; color: var(--muted); }
+.project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.3rem 1.4rem; display: flex; gap: 1rem; align-items: flex-start; transition: border-color 0.2s; cursor: pointer; }
+.project-card:hover { border-color: var(--accent); }
+.project-card .proj-icon { font-size: 1.8rem; flex-shrink: 0; }
+.project-card .proj-body .proj-title { font-weight: 700; font-size: 0.95rem; }
+.project-card .proj-body .proj-desc { color: var(--muted); font-size: 0.83rem; margin-top: 3px; }
+.project-card .proj-body .proj-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.project-card .proj-body .proj-tags span { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); color: var(--accent); border-radius: 50px; padding: 1px 9px; font-size: 0.69rem; }
+.contact-row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.contact-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 0.7rem 1.1rem; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; text-decoration: none; color: var(--text); transition: border-color 0.2s; }
+.contact-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── CERT BADGES ── */
+.cert-progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+.cert-progress-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; display: flex; gap: 0.9rem; align-items: center; }
+.cert-progress-card.active { border-color: var(--yellow); }
+.cert-progress-card .cp-icon { font-size: 2rem; flex-shrink: 0; }
+.cert-progress-card .cp-body .cp-name { font-weight: 700; font-size: 0.9rem; }
+.cert-progress-card .cp-body .cp-status { font-size: 0.72rem; margin-top: 2px; }
+.cert-progress-card.active .cp-body .cp-status { color: var(--yellow); }
+.cert-progress-card.done .cp-body .cp-status { color: var(--accent2); }
+.cert-progress-card .cp-body .cp-desc { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
+
+/* ── PROJECT DEEP DIVE ── */
+.project-deep-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+.project-deep-card:hover { border-color: var(--accent); }
+.project-deep-card .pd-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
+.project-deep-card .pd-title { font-weight: 700; font-size: 1rem; }
+.project-deep-card .pd-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.project-deep-card .pd-tags span { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); color: var(--accent); border-radius: 50px; padding: 1px 9px; font-size: 0.69rem; }
+.project-deep-card .pd-desc { color: var(--muted); font-size: 0.86rem; margin-bottom: 0.8rem; }
+.project-deep-card .pd-points { color: var(--muted); font-size: 0.84rem; padding-left: 1.1rem; }
+.project-deep-card .pd-points li { margin-bottom: 3px; }
+.project-deep-card .pd-link { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); font-size: 0.82rem; text-decoration: none; margin-top: 0.7rem; }
+.project-deep-card .pd-link:hover { text-decoration: underline; }
+
+/* ── WHY HIRE ME ── */
+.why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+.why-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
+.why-card .wc-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.why-card .wc-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.3rem; }
+.why-card .wc-desc { color: var(--muted); font-size: 0.8rem; }
+
+/* ── PORTFOLIO PAGE ── */
+.portfolio-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem; }
+.portfolio-wrap h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 0.3rem; }
+.portfolio-wrap .pw-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+.portfolio-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; margin-bottom: 1.2rem; transition: border-color 0.2s; }
+.portfolio-card:hover { border-color: var(--accent); }
+.portfolio-card .pc-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem; }
+.portfolio-card .pc-title { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
+.portfolio-card .pc-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.portfolio-card .pc-tags span { background: rgba(88,166,255,0.08); border: 1px solid rgba(88,166,255,0.25); color: var(--accent); border-radius: 50px; padding: 2px 10px; font-size: 0.7rem; }
+.portfolio-card .pc-desc { color: var(--muted); font-size: 0.86rem; margin-bottom: 0.9rem; }
+.portfolio-card .pc-points { color: var(--muted); font-size: 0.84rem; padding-left: 1.1rem; margin-bottom: 1rem; }
+.portfolio-card .pc-points li { margin-bottom: 4px; }
+.portfolio-card .pc-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+.portfolio-card .pc-meta { font-size: 0.75rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
+.portfolio-card .pc-meta span { display: flex; align-items: center; gap: 4px; }
+.coming-soon-card { background: var(--surface); border: 1px dashed var(--border); border-radius: 14px; padding: 1.4rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 1rem; opacity: 0.6; }
+.coming-soon-card .cs-icon { font-size: 1.6rem; flex-shrink: 0; }
+.coming-soon-card .cs-title { font-weight: 700; font-size: 0.9rem; }
+.coming-soon-card .cs-sub { color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+.coming-soon-badge { background: rgba(227,179,65,0.1); border: 1px solid rgba(227,179,65,0.3); color: var(--yellow); border-radius: 50px; padding: 2px 10px; font-size: 0.68rem; font-weight: 700; margin-left: auto; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.site-footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; margin-top: 3rem; }
+.site-footer p { font-size: 0.78rem; color: var(--muted); }
+.site-footer a { color: var(--accent); text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* ── PRINT CERT ── */
+@media print {
+  nav, .cert-actions, .back-btn, #page-cert > .cert-page > .back-btn { display: none !important; }
+  body { background: #fff; color: #000; }
+  .cert-frame { border-color: #000; color: #000; }
+  .cert-name { color: #1a56c4; }
+  [data-theme="dark"] .cert-frame, [data-theme="light"] .cert-frame { background: #fff; }
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; align-items: center; }
+  .hero { padding: 3rem 1rem 1.5rem; }
+  .stats { gap: 1.2rem; }
+  .section { padding: 0 1rem 1.5rem; }
+  .tip-of-day { padding: 0 1rem; }
+  .progress-dashboard { padding: 0 1rem 1.5rem; }
+  .course-content, .quiz-wrap, .cert-page { padding: 1.2rem; }
+  .cert-frame { padding: 2rem 1.2rem; }
+  .cert-name { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">🛡️ CyberSafe</div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home">Home</a>
+    <a onclick="showPage('courses')" id="nav-courses">Courses</a>
+    <a onclick="showPage('quiz')" id="nav-quiz">Quiz</a>
+    <a onclick="showPage('resources')" id="nav-resources">Resources</a>
+    <a onclick="showPage('glossary')" id="nav-glossary">Glossary</a>
+    <a onclick="showPage('cert')" id="nav-cert">Certificate</a>
+    <a onclick="showPage('about')" id="nav-about">About</a>
+    <a onclick="showPage('portfolio')" id="nav-portfolio">Portfolio</a>
+  </div>
+  <div class="nav-right">
+    <button class="search-btn" onclick="openSearch()" title="Search">🔍</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-icon" title="Toggle theme">🌙</button>
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger-btn">☰</button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a onclick="showPage('home');closeMenu()">🏠 Home</a>
+  <a onclick="showPage('courses');closeMenu()">📚 Courses</a>
+  <a onclick="showPage('quiz');closeMenu()">🧠 Quiz</a>
+  <a onclick="showPage('resources');closeMenu()">🔗 Resources</a>
+  <a onclick="showPage('glossary');closeMenu()">📖 Glossary</a>
+  <a onclick="showPage('cert');closeMenu()">🎓 Certificate</a>
+  <a onclick="showPage('about');closeMenu()">👤 About</a>
+  <a onclick="showPage('portfolio');closeMenu()">💼 Portfolio</a>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="search-overlay" onclick="closeSearch(event)">
+  <div class="search-box" onclick="event.stopPropagation()">
+    <div class="search-input-wrap">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Search courses, topics, terms…" oninput="runSearch(this.value)" />
+      <span style="cursor:pointer;color:var(--muted)" onclick="closeSearch()">✕</span>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="search-empty">Start typing to search…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">Free Cybersecurity Awareness Training</div>
+    <h1>Stay Safe in the <span>Digital World</span></h1>
+    <p>Learn how to protect yourself from scams, phishing attacks, and online threats — in plain, simple language. No tech background needed.</p>
+    <div class="hero-btns">
+      <button class="btn" onclick="showPage('courses')">📚 Start Learning</button>
+      <button class="btn btn-outline" onclick="showPage('quiz')">🧠 Take the Quiz</button>
+    </div>
+  </div>
+
+  <div class="tip-of-day" id="tip-of-day-wrap"></div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" data-target="3400000000">0</div><div class="stat-label">Phishing emails sent daily</div></div>
+    <div class="stat"><div class="stat-num" data-target="91" data-suffix="%">0%</div><div class="stat-label">Cyberattacks start with phishing</div></div>
+    <div class="stat"><div class="stat-num" data-target="10.3" data-prefix="$" data-suffix="B">$0B</div><div class="stat-label">Lost to online scams in 2023</div></div>
+  </div>
+
+  <div class="progress-dashboard">
+    <div class="dash-title">Your Progress</div>
+    <div class="dash-cards" id="dash-cards"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📚 Courses</div>
+    <div class="courses-grid" id="home-courses-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════ COURSES PAGE ══════════ -->
+<div id="page-courses" class="page">
+  <div class="section" style="padding-top:2rem">
+    <div class="section-title">📚 All Courses</div>
+    <div class="courses-grid" id="courses-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════ COURSE VIEWER ══════════ -->
+<div id="page-course" class="page">
+  <div class="course-content">
+    <button class="back-btn" onclick="showPage('courses')">← Back to Courses</button>
+    <div class="course-header">
+      <h1 id="course-title"></h1>
+      <p id="course-subtitle"></p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div id="course-lessons"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" id="btn-prev" onclick="prevLesson()" style="display:none">← Prev</button>
+      <button class="btn" id="btn-next" onclick="nextLesson()">Next →</button>
+    </div>
+    <div class="share-row" style="margin-top:2rem">
+      <span>Share:</span>
+      <a class="share-chip" id="share-twitter" href="#" target="_blank">𝕏 Twitter</a>
+      <a class="share-chip" id="share-linkedin" href="#" target="_blank">in LinkedIn</a>
+      <a class="share-chip" onclick="copyShareLink()">🔗 Copy Link</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ QUIZ PAGE ══════════ -->
+<div id="page-quiz" class="page">
+  <div class="quiz-wrap">
+    <button class="back-btn" style="margin-bottom:0.5rem" onclick="showPage('home')">← Back to Home</button>
+    <div class="quiz-header">
+      <h1>🧠 Knowledge Quiz</h1>
+      <p>Test what you know about cybersecurity, phishing, and scams.</p>
+    </div>
+    <div id="quiz-body"></div>
+  </div>
+</div>
+
+<!-- ══════════ CERTIFICATE PAGE ══════════ -->
+<div id="page-cert" class="page">
+  <div class="cert-page">
+    <button class="back-btn" onclick="showPage('home')">← Back to Home</button>
+    <div id="cert-body"></div>
+  </div>
+</div>
+
+<!-- ══════════ RESOURCES PAGE ══════════ -->
+<div id="page-resources" class="page">
+  <div class="section" style="padding-top:2rem">
+    <div class="section-title">🔗 Trusted Resources</div>
+    <div class="resources-grid">
+      <div class="resource-card"><div class="rc-icon">🔓</div><div class="rc-body"><a href="https://haveibeenpwned.com" target="_blank">Have I Been Pwned?</a><p>Check if your email or password has been exposed in a data breach.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🔑</div><div class="rc-body"><a href="https://bitwarden.com" target="_blank">Bitwarden</a><p>Free, open-source password manager. Store strong, unique passwords for every site.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🏛️</div><div class="rc-body"><a href="https://reportfraud.ftc.gov" target="_blank">FTC Report Fraud</a><p>Officially report scams and fraud to the Federal Trade Commission.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🎣</div><div class="rc-body"><a href="https://www.consumer.ftc.gov/articles/how-recognize-and-avoid-phishing-scams" target="_blank">FTC: Phishing Guide</a><p>The FTC's official guide on recognizing and avoiding phishing scams.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🌐</div><div class="rc-body"><a href="https://staysafeonline.org" target="_blank">StaySafeOnline.org</a><p>National Cybersecurity Alliance — tips and resources for everyday users.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">📱</div><div class="rc-body"><a href="https://2fa.directory" target="_blank">2FA Directory</a><p>Find out which sites support two-factor authentication and how to enable it.</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🧪</div><div class="rc-body"><a href="https://phishingquiz.withgoogle.com" target="_blank">Google Phishing Quiz</a><p>Google's interactive quiz — can you spot a phishing email?</p></div></div>
+      <div class="resource-card"><div class="rc-icon">🛡️</div><div class="rc-body"><a href="https://www.cisa.gov/topics/cybersecurity-best-practices" target="_blank">CISA Best Practices</a><p>Official cybersecurity best practices from the US Cybersecurity Agency.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ABOUT PAGE ══════════ -->
+<div id="page-about" class="page">
+  <div class="about-wrap">
+    <div class="about-hero">
+      <div class="about-avatar">👤</div>
+      <div class="about-intro">
+        <h1>Martin Sigala</h1>
+        <div class="about-title">IT Professional &amp; Cybersecurity Analyst (in training)</div>
+        <p>5+ years in Information Technology with a B.A. in Computer Science. Completed a hands-on cybersecurity internship at <strong>The Cyber Range</strong> — a live SOC environment led by industry educator Josh Madakor — gaining real enterprise security experience with tools used by Fortune 500 companies.</p>
+        <div class="about-tags">
+          <span class="about-tag blue">Cybersecurity</span>
+          <span class="about-tag blue">SOC Operations</span>
+          <span class="about-tag blue">SIEM / Microsoft Sentinel</span>
+          <span class="about-tag blue">Azure</span>
+          <span class="about-tag">B.S. Information Technology & Cybersecurity</span>
+          <span class="about-tag">5 Years IT Experience</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="about-section">
+      <h2>Experience</h2>
+      <div class="exp-card">
+        <div class="exp-icon">🛡️</div>
+        <div class="exp-body">
+          <div class="exp-role">Cybersecurity Analyst Intern</div>
+          <div class="exp-org"><a href="https://www.skool.com/cyber-range/about" target="_blank">The Cyber Range — Josh Madakor</a></div>
+          <div class="exp-date">2024 · Remote · Completed</div>
+          <ul class="exp-desc">
+            <li>Working inside a live SOC (Security Operations Center) with real enterprise tooling</li>
+            <li>Monitoring and investigating security alerts using <strong>Microsoft Sentinel</strong> (cloud-native SIEM)</li>
+            <li>Writing and tuning <strong>KQL (Kusto Query Language)</strong> queries to detect threats in log data</li>
+            <li>Managing and analyzing vulnerability findings with <strong>Tenable Vulnerability Management</strong></li>
+            <li>Deploying and configuring <strong>Azure Virtual Machines</strong> and Log Analytics Workspaces</li>
+            <li>Using <strong>Microsoft Defender for Endpoint</strong> for endpoint detection and response (EDR)</li>
+            <li>Performing hands-on <strong>Threat Hunting</strong> and incident triage in a shared enterprise environment</li>
+          </ul>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-icon">💻</div>
+        <div class="exp-body">
+          <div class="exp-role">Information Technology Professional</div>
+          <div class="exp-org">Various Roles</div>
+          <div class="exp-date">5+ Years</div>
+          <ul class="exp-desc">
+            <li>5+ years of hands-on IT support, systems administration, and infrastructure experience</li>
+            <li>Broad exposure to networking, hardware, operating systems, and user support</li>
+            <li>Transitioning focus to cybersecurity — combining IT foundations with SOC analyst skills</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="about-section">
+      <h2>Education</h2>
+      <div class="exp-card">
+        <div class="exp-icon">🎓</div>
+        <div class="exp-body">
+          <div class="exp-role">B.S. Information Technology & Cybersecurity</div>
+          <div class="exp-org">University of Phoenix</div>
+          <div class="exp-date">2021</div>
+          <div class="exp-desc">Degree focused directly on information technology and cybersecurity — covering networking, systems security, threat analysis, and IT infrastructure. Directly aligned with a SOC analyst career path.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO INTRO -->
+    <div class="about-section">
+      <h2>Video Introduction</h2>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:640px">
+        <div style="position:relative;padding-bottom:56.25%;height:0;background:var(--surface2)">
+          <!-- PLACEHOLDER — replace YOUR_VIDEO_ID with your YouTube video ID -->
+          <!-- Example: if your YouTube URL is https://www.youtube.com/watch?v=abc123, your ID is abc123 -->
+          <div id="video-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;color:var(--muted)">
+            <div style="font-size:3rem">🎬</div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text)">Video Introduction — Coming Soon</div>
+            <div style="font-size:0.8rem;text-align:center;max-width:320px;padding:0 1rem">A short intro video from Martin about his background, experience, and passion for cybersecurity.</div>
+          </div>
+        </div>
+        <div style="padding:1rem 1.2rem;border-top:1px solid var(--border)">
+          <div style="font-weight:700;font-size:0.88rem">Martin Sigala — Cybersecurity Professional</div>
+          <div style="color:var(--muted);font-size:0.78rem;margin-top:2px">B.S. Information Technology & Cybersecurity · The Cyber Range Alumni · SOC Analyst</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY HIRE ME -->
+    <div class="about-section">
+      <h2>What I Bring</h2>
+      <div class="why-grid">
+        <div class="why-card"><div class="wc-icon">🔍</div><div class="wc-title">Real SOC Experience</div><div class="wc-desc">Worked inside a live Security Operations Center — not a simulation. Investigated real alerts using enterprise tools used by Fortune 500 companies.</div></div>
+        <div class="why-card"><div class="wc-icon">📊</div><div class="wc-title">SIEM & Log Analysis</div><div class="wc-desc">Hands-on with Microsoft Sentinel. Wrote KQL queries to hunt threats, correlate events, and reduce false positives in a shared production environment.</div></div>
+        <div class="why-card"><div class="wc-icon">🛡️</div><div class="wc-title">Vulnerability Management</div><div class="wc-desc">Used Tenable to scan, prioritize, and track vulnerabilities. Built remediation workflows and documented findings at a professional level.</div></div>
+        <div class="why-card"><div class="wc-icon">💻</div><div class="wc-title">Strong IT Foundation</div><div class="wc-desc">5+ years in IT plus a B.A. in Computer Science means I understand systems, networking, and infrastructure — not just security tools in isolation.</div></div>
+      </div>
+    </div>
+
+    <!-- CERTIFICATIONS -->
+    <div class="about-section">
+      <h2>Certifications</h2>
+      <div class="cert-progress-grid">
+        <div class="cert-progress-card done">
+          <div class="cp-icon">🏆</div>
+          <div class="cp-body">
+            <div class="cp-name">Google Cybersecurity</div>
+            <div class="cp-status" style="color:var(--accent2)">✅ Completed</div>
+            <div class="cp-desc">Google's professional cybersecurity certificate covering threat detection, network security, and security operations.</div>
+          </div>
+        </div>
+        <div class="cert-progress-card done">
+          <div class="cp-icon">🏆</div>
+          <div class="cp-body">
+            <div class="cp-name">TryHackMe — SOC Level 1</div>
+            <div class="cp-status" style="color:var(--accent2)">✅ Completed</div>
+            <div class="cp-desc">Hands-on SOC analyst training covering SIEM, incident response, threat intelligence, and digital forensics.</div>
+          </div>
+        </div>
+        <div class="cert-progress-card active">
+          <div class="cp-icon">📋</div>
+          <div class="cp-body">
+            <div class="cp-name">CompTIA Security+</div>
+            <div class="cp-status">🟡 In Progress — Expected Sept 2025</div>
+            <div class="cp-desc">Industry-standard baseline security certification covering threats, cryptography, and network security.</div>
+          </div>
+        </div>
+        <div class="cert-progress-card active">
+          <div class="cp-icon">🎯</div>
+          <div class="cp-body">
+            <div class="cp-name">GIAC Cyber Range (GCR)</div>
+            <div class="cp-status">🟡 In Progress</div>
+            <div class="cp-desc">Hands-on certification from Josh Madakor's Cyber Range validating real SOC analyst skills.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="about-section">
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-card"><div class="sk-icon">🔵</div><div><div class="sk-label">Microsoft Sentinel</div><div class="sk-sub">SIEM · Alert investigation · KQL</div></div></div>
+        <div class="skill-card"><div class="sk-icon">☁️</div><div><div class="sk-label">Azure VMs</div><div class="sk-sub">Virtual machines · Log Analytics</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🔍</div><div><div class="sk-label">KQL</div><div class="sk-sub">Kusto Query Language · Threat hunting</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🛡️</div><div><div class="sk-label">Microsoft Defender</div><div class="sk-sub">Endpoint detection &amp; response</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🔎</div><div><div class="sk-label">Tenable</div><div class="sk-sub">Vulnerability management &amp; scanning</div></div></div>
+        <div class="skill-card"><div class="sk-icon">📊</div><div><div class="sk-label">SIEM Operations</div><div class="sk-sub">Log analysis · Incident triage</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🖥️</div><div><div class="sk-label">Virtualization</div><div class="sk-sub">VM deployment &amp; configuration</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🌐</div><div><div class="sk-label">Networking &amp; IT</div><div class="sk-sub">5+ years hands-on experience</div></div></div>
+        <div class="skill-card"><div class="sk-icon">📜</div><div><div class="sk-label">NIST CSF</div><div class="sk-sub">Cybersecurity Framework</div></div></div>
+        <div class="skill-card"><div class="sk-icon">⚖️</div><div><div class="sk-label">Compliance</div><div class="sk-sub">PCI-DSS · GDPR · HIPAA</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🔟</div><div><div class="sk-label">OWASP Top 10</div><div class="sk-sub">Web application security risks</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🖥️</div><div><div class="sk-label">BASH Scripting</div><div class="sk-sub">Linux automation & remediation</div></div></div>
+        <div class="skill-card"><div class="sk-icon">🔥</div><div><div class="sk-label">Firewall / NSG</div><div class="sk-sub">Rule configuration & hardening</div></div></div>
+      </div>
+    </div>
+
+    <!-- PROJECTS DEEP DIVE -->
+    <div class="about-section">
+      <h2>Projects</h2>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">See the full internship project portfolio with detailed write-ups → <span onclick="showPage('portfolio')" style="color:var(--accent);cursor:pointer;font-weight:600">View Portfolio Page</span></p>
+
+      <div class="project-deep-card">
+        <div class="pd-header">
+          <div class="pd-title">🔎 Vulnerability Management Program</div>
+          <div class="pd-tags"><span>Tenable</span><span>PowerShell</span><span>BASH</span><span>Azure</span></div>
+        </div>
+        <div class="pd-desc">Designed and implemented a full vulnerability management lifecycle inside a live enterprise environment using Tenable Vulnerability Management.</div>
+        <ul class="pd-points">
+          <li>Deployed Tenable scans across Azure virtual machines to identify and categorize vulnerabilities</li>
+          <li>Prioritized findings by severity (Critical/High/Medium) and documented remediation plans</li>
+          <li>Wrote PowerShell and BASH scripts to automate vulnerability remediations at scale</li>
+          <li>Tracked remediation progress and produced reports to simulate real SOC workflows</li>
+        </ul>
+        <a class="pd-link" href="https://github.com/martinsigala32/vulnerability-management-program/tree/main" target="_blank">🐙 View on GitHub →</a>
+      </div>
+
+      <div class="project-deep-card">
+        <div class="pd-header">
+          <div class="pd-title">🕵️ Threat Hunting — Tor Browser Detection</div>
+          <div class="pd-tags"><span>Microsoft Sentinel</span><span>KQL</span><span>Threat Hunting</span><span>SIEM</span></div>
+        </div>
+        <div class="pd-desc">Conducted a real threat hunting scenario to detect unauthorized Tor Browser usage within an enterprise environment using Microsoft Sentinel.</div>
+        <ul class="pd-points">
+          <li>Developed KQL queries in Microsoft Sentinel to identify Tor-related network activity in log data</li>
+          <li>Correlated endpoint telemetry with network logs to build a complete attack timeline</li>
+          <li>Documented findings in a structured incident report following SOC analyst best practices</li>
+          <li>Demonstrated ability to proactively hunt threats without a pre-existing alert trigger</li>
+        </ul>
+        <a class="pd-link" href="https://github.com/martinsigala32/Threat-Hunting-Scenario" target="_blank">🐙 View on GitHub →</a>
+      </div>
+
+      <div class="project-deep-card">
+        <div class="pd-header">
+          <div class="pd-title">⚙️ STIG Compliance Script (WN10-AU-000500)</div>
+          <div class="pd-tags"><span>PowerShell</span><span>STIG</span><span>Compliance</span><span>Windows 10</span></div>
+        </div>
+        <div class="pd-desc">Wrote a PowerShell script to automate the implementation of a specific Windows 10 STIG (Security Technical Implementation Guide) compliance requirement.</div>
+        <ul class="pd-points">
+          <li>Automated audit policy configuration to meet DoD STIG standard WN10-AU-000500</li>
+          <li>Reduced manual remediation time for a common compliance finding</li>
+          <li>Demonstrates knowledge of government security frameworks and scripting for compliance automation</li>
+        </ul>
+        <a class="pd-link" href="https://github.com/martinsigala32/STIG-WN10-AU-000500.ps1" target="_blank">🐙 View on GitHub →</a>
+      </div>
+
+      <div class="project-deep-card">
+        <div class="pd-header">
+          <div class="pd-title">🛡️ CyberSafe — Cybersecurity Awareness Platform</div>
+          <div class="pd-tags"><span>HTML/CSS/JS</span><span>localStorage</span><span>Responsive Design</span><span>UX Design</span></div>
+        </div>
+        <div class="pd-desc">Built this full-featured cybersecurity awareness website from scratch to educate the public on phishing, scams, and online threats — and to demonstrate technical and design skills to employers.</div>
+        <ul class="pd-points">
+          <li>3 interactive courses with progress tracking persisted via localStorage</li>
+          <li>8-question quiz with instant feedback and score saving</li>
+          <li>Printable certificate of completion, dark/light mode, global search, glossary, and resources page</li>
+          <li>Fully responsive — mobile hamburger menu, fluid grid layouts</li>
+        </ul>
+        <a class="pd-link" onclick="showPage('home')" style="cursor:pointer">🔗 View Live →</a>
+      </div>
+    </div>
+
+    <!-- STAYING CURRENT -->
+    <div class="about-section">
+      <h2>How I Stay Current</h2>
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">Cybersecurity changes daily. Here are the resources I use to stay up to date on threats, news, and industry developments.</p>
+      <div class="resources-grid">
+        <div class="resource-card">
+          <div class="rc-icon">🎙️</div>
+          <div class="rc-body">
+            <a href="https://thecyberwire.com/podcasts/daily-briefing" target="_blank">CyberWire Daily Briefing</a>
+            <p>Daily cybersecurity news and analysis trusted by industry leaders. One of the most respected sources in the field — I listen every weekday to stay on top of the threat landscape.</p>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="rc-icon">📺</div>
+          <div class="rc-body">
+            <a href="https://www.youtube.com/playlist?list=PL7JW9Q3mhniRi171QwPwnWzLEsB8pkGLJ" target="_blank">CyberWire Daily — YouTube</a>
+            <p>The CyberWire Daily podcast on YouTube by N2K Networks. Daily cybersecurity news and expert interviews — the same content industry leaders depend on.</p>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="rc-icon">🛡️</div>
+          <div class="rc-body">
+            <a href="https://www.youtube.com/playlist?list=PL4Q-ttyNIRApsbLUpFXzrMnThZc_MCoHy" target="_blank">Daily Threat Brief — Simply Cyber</a>
+            <p>Gerald Auger, PhD breaks down the top cybersecurity stories daily. Practical, analyst-focused coverage built for SOC professionals and security analysts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="about-section">
+      <h2>Get In Touch</h2>
+      <div class="contact-row">
+        <a class="contact-chip" href="mailto:martinsigala804@gmail.com">✉️ martinsigala804@gmail.com</a>
+        <a class="contact-chip" href="https://www.linkedin.com/in/martin-sigala-b56177239/" target="_blank">in LinkedIn</a>
+        <a class="contact-chip" href="https://github.com/martinsigala32" target="_blank">🐙 GitHub</a>
+      </div>
+      <p style="color:var(--muted);font-size:0.8rem;margin-top:1rem">Open to SOC Analyst, Junior Security Analyst, and IT Security roles.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PORTFOLIO PAGE ══════════ -->
+<div id="page-portfolio" class="page">
+  <div class="portfolio-wrap">
+    <button class="back-btn" onclick="showPage('about')">← Back to About</button>
+    <h1>💼 Internship Project Portfolio</h1>
+    <p class="pw-sub">Hands-on work completed during my cybersecurity internship at <a href="https://www.skool.com/cyber-range/about" target="_blank" style="color:var(--accent)">The Cyber Range</a> — a live SOC environment led by Josh Madakor. Each project used real enterprise tools in a production-like Azure environment.</p>
+
+    <!-- PROJECT 1 -->
+    <div class="portfolio-card">
+      <div class="pc-top">
+        <div class="pc-title">🔍 Vulnerability Scanning with Tenable — Windows 10 VM</div>
+        <div class="pc-tags">
+          <span>Tenable</span><span>Azure VMs</span><span>DISA STIG</span><span>Vulnerability Management</span>
+        </div>
+      </div>
+      <div class="pc-desc">Configured and executed an advanced network vulnerability scan using Tenable Vulnerability Management against an intentionally misconfigured Windows 10 virtual machine hosted in Microsoft Azure. Applied DISA STIG compliance audit policies and analyzed the full results.</div>
+      <ul class="pc-points">
+        <li>Provisioned a Windows 10 VM in Azure and intentionally introduced misconfigurations (weak credentials, disabled firewall, open NSG) to simulate a vulnerable endpoint</li>
+        <li>Configured an Advanced Network Scan template in Tenable with credentialed scanning, TCP port scanning, and DISA Microsoft Windows 10 STIG compliance audits</li>
+        <li>Launched the scan and analyzed results — reviewed vulnerabilities by plugin, compliance audit findings, and remediation recommendations</li>
+        <li>Documented the full workflow from VM setup through scan execution and results analysis</li>
+      </ul>
+      <div class="pc-footer">
+        <div class="pc-meta">
+          <span>🏢 The Cyber Range Internship</span>
+          <span>🔧 Tenable · Azure · Windows 10 · DISA STIG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="portfolio-card">
+      <div class="pc-top">
+        <div class="pc-title">⚙️ STIG Remediation Automation with PowerShell — WN10-AU-000500</div>
+        <div class="pc-tags">
+          <span>PowerShell</span><span>DISA STIG</span><span>Tenable</span><span>Azure VMs</span><span>Compliance</span>
+        </div>
+      </div>
+      <div class="pc-desc">Identified a failing DISA STIG compliance check on a Windows 10 Azure VM, manually remediated the finding, validated the fix, then automated the remediation using a PowerShell script — following a full professional vulnerability remediation lifecycle.</div>
+      <ul class="pc-points">
+        <li>Ran a Tenable STIG compliance scan targeting DISA Windows 10 STIG v3r1 and identified the failing control WN10-AU-000500 (audit policy configuration)</li>
+        <li>Researched the STIG requirement and manually applied the remediation, then rescanned to confirm the fix was successful</li>
+        <li>Reverted the manual fix and rescanned to demonstrate the failure state — proving before/after validation methodology</li>
+        <li>Developed a PowerShell script to automate the STIG remediation, tested it against the VM, and confirmed compliance via rescan</li>
+        <li>Published the PowerShell script to GitHub as a reusable compliance automation tool</li>
+      </ul>
+      <div class="pc-footer">
+        <div class="pc-meta">
+          <span>🏢 The Cyber Range Internship</span>
+          <span>🔧 PowerShell · Tenable · Azure · DISA STIG v3r1</span>
+        </div>
+        <a href="https://github.com/martinsigala32/STIG-WN10-AU-000500.ps1" target="_blank" style="color:var(--accent);font-size:0.82rem;display:flex;align-items:center;gap:5px">🐙 View Script on GitHub →</a>
+      </div>
+    </div>
+
+    <!-- COMING SOON -->
+    <div style="margin: 2rem 0 1rem; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted)">More Projects — Coming Soon</div>
+
+    <div class="coming-soon-card">
+      <div class="cs-icon">📋</div>
+      <div><div class="cs-title">Incident Report</div><div class="cs-sub">Formal incident documentation from a real SOC scenario</div></div>
+      <div class="coming-soon-badge">Coming Soon</div>
+    </div>
+    <div class="coming-soon-card">
+      <div class="cs-icon">🔍</div>
+      <div><div class="cs-title">KQL Threat Hunting Queries</div><div class="cs-sub">Custom KQL written in Microsoft Sentinel to detect threats</div></div>
+      <div class="coming-soon-badge">Coming Soon</div>
+    </div>
+    <div class="coming-soon-card">
+      <div class="cs-icon">🕵️</div>
+      <div><div class="cs-title">Threat Hunting Write-Up</div><div class="cs-sub">Documented threat hunt scenario and findings</div></div>
+      <div class="coming-soon-badge">Coming Soon</div>
+    </div>
+    <div class="coming-soon-card">
+      <div class="cs-icon">📊</div>
+      <div><div class="cs-title">Vulnerability Scan Results</div><div class="cs-sub">Full vulnerability assessment findings and remediation plan</div></div>
+      <div class="coming-soon-badge">Coming Soon</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ GLOSSARY PAGE ══════════ -->
+<div id="page-glossary" class="page">
+  <div class="section" style="padding-top:2rem; max-width:720px">
+    <div class="section-title">📖 Cybersecurity Glossary</div>
+    <input class="glossary-search" type="text" placeholder="Search terms…" oninput="filterGlossary(this.value)" />
+    <dl class="glossary-list" id="glossary-list"></dl>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>Built by <strong>Martin Sigala</strong> · IT Professional &amp; Cybersecurity Internship Alumni — <a href="https://www.skool.com/cyber-range/about" target="_blank">The Cyber Range</a> · B.S. Information Technology & Cybersecurity · <a href="mailto:martinsigala804@gmail.com">martinsigala804@gmail.com</a></p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+const COURSES = {
+  cyber101: {
+    title: "What is Cybersecurity?", subtitle: "Your foundation for staying safe online",
+    icon: "🔐", duration: "5 min", level: "Beginner", levelClass: "",
+    desc: "Understand the basics of online threats and why protecting your information matters.",
+    lessons: [
+      { heading: "What is Cybersecurity?", html: `<p>Cybersecurity is the practice of protecting your devices, accounts, and personal information from people who want to steal or misuse it.</p><p>Just like you lock your front door to keep strangers out, cybersecurity is about locking the digital doors to your personal life — your bank accounts, emails, photos, and identity.</p><div class="tip-box">💡 <strong>Think of it this way:</strong> Your personal information is valuable. Criminals want your passwords, credit card numbers, Social Security number, and more — often to steal money or commit fraud in your name.</div>` },
+      { heading: "Who Are the Threats?", html: `<p>Cybercriminals are people (or organized groups) who use technology to steal from others. They target <strong>everyone</strong> — not just companies or rich people.</p><ul><li><strong>Scammers</strong> — pretend to be someone trustworthy to trick you</li><li><strong>Phishers</strong> — send fake messages to steal your login info</li><li><strong>Hackers</strong> — break into accounts or systems</li><li><strong>Identity thieves</strong> — steal your personal info to impersonate you</li></ul><div class="warn-box">⚠️ Cybercriminals don't discriminate. Seniors, young people, and tech-savvy users are all targeted.</div>` },
+      { heading: "Your First Lines of Defense", html: `<p>Most cyberattacks succeed because of simple mistakes. Here are your most powerful protections:</p><ul><li>✅ <strong>Strong passwords</strong> — at least 12 characters, mixing letters, numbers, and symbols</li><li>✅ <strong>Unique passwords</strong> — never reuse the same password across sites</li><li>✅ <strong>Two-factor authentication (2FA)</strong> — a code sent to your phone adds a second lock</li><li>✅ <strong>Software updates</strong> — updates patch security holes attackers exploit</li><li>✅ <strong>Skepticism</strong> — if something feels off, pause before clicking</li></ul><div class="tip-box">💡 A password manager (like Bitwarden) can create and remember strong passwords for every site — for free.</div>` }
+    ]
+  },
+  phishing: {
+    title: "Phishing Attacks", subtitle: "How to recognize and avoid email and message traps",
+    icon: "🎣", duration: "7 min", level: "Intermediate", levelClass: "yellow",
+    desc: "Learn to spot fake emails, texts, and websites designed to steal your credentials.",
+    lessons: [
+      { heading: "What is Phishing?", html: `<p>Phishing is when a criminal sends you a message pretending to be someone you trust — your bank, Amazon, PayPal, the IRS, or even a friend — to trick you into handing over your password, credit card, or other personal info.</p><p>The name comes from "fishing" — criminals cast a wide net and wait for people to bite.</p><div class="warn-box">⚠️ Phishing is the #1 cause of data breaches and financial fraud. 91% of all cyberattacks begin with a phishing email.</div>` },
+      { heading: "Red Flags in Emails & Texts", html: `<p>Learn to spot these common warning signs:</p><ul><li>🚩 <strong>Urgency or fear</strong> — "Your account will be closed in 24 hours!"</li><li>🚩 <strong>Suspicious sender address</strong> — "support@amaz0n-help.com" instead of "amazon.com"</li><li>🚩 <strong>Generic greetings</strong> — "Dear Customer" instead of your real name</li><li>🚩 <strong>Spelling or grammar errors</strong> — legitimate companies proofread their emails</li><li>🚩 <strong>Unexpected links or attachments</strong> — especially if you didn't request anything</li><li>🚩 <strong>Requests for personal info</strong> — your bank will never ask for your password by email</li></ul>` },
+      { heading: "Fake Websites (Spoofed Sites)", html: `<p>Phishers often create websites that look identical to real ones. The goal is to get you to type in your password.</p><ul><li>🔍 Check the URL carefully — look for misspellings like "paypa1.com" or "g00gle.com"</li><li>🔒 Look for HTTPS — though fake sites can also have HTTPS</li><li>🚫 Don't click links in emails — go directly to the site by typing the address yourself</li></ul><div class="tip-box">💡 <strong>Best practice:</strong> Bookmark your bank and important sites. Always navigate there directly — never through a link in an email or text.</div>` },
+      { heading: "What To Do If You're Targeted", html: `<p>If you receive a suspicious message:</p><ul><li><strong>Don't click any links</strong> or download attachments</li><li><strong>Don't reply</strong> — even "STOP" confirms your address is active</li><li><strong>Report it</strong> — forward phishing emails to spam@uce.gov or mark as spam</li><li><strong>If you clicked</strong> — change your password immediately and enable 2FA</li></ul><div class="warn-box">⚠️ If you entered payment details on a suspicious site, call your bank immediately.</div>` }
+    ]
+  },
+  incident: {
+    title: "Incident Response", subtitle: "How security teams detect, contain, and recover from attacks",
+    icon: "🚒", duration: "8 min", level: "Intermediate", levelClass: "yellow",
+    desc: "Learn the 6-step incident response process used by real SOC teams to handle cyberattacks.",
+    lessons: [
+      { heading: "What is Incident Response?", html: `<p>Incident Response (IR) is the organized approach a security team takes when a cyberattack or data breach occurs. The goal is to handle the situation in a way that limits damage, reduces recovery time, and prevents it from happening again.</p><p>Think of it like the fire department — they don't just show up and spray water. They have a plan: assess, contain, extinguish, investigate, and prevent the next fire.</p><div class="tip-box">💡 Every organization that takes security seriously has an Incident Response Plan (IRP) — a documented playbook for exactly what to do when things go wrong.</div>` },
+      { heading: "Step 1 & 2 — Preparation & Identification", html: `<p><strong>Step 1: Preparation</strong></p><p>Before an incident happens, teams prepare by setting up monitoring tools (like a SIEM), defining roles, creating playbooks, and training staff. You can't respond well to something you weren't ready for.</p><p><strong>Step 2: Identification</strong></p><p>This is where the SOC analyst comes in. Identification means detecting that something is wrong — an alert fires in your SIEM, a user reports suspicious activity, or a threat hunt turns up anomalies.</p><ul><li>Is this a real attack or a false positive?</li><li>What systems are affected?</li><li>When did it start?</li></ul><div class="warn-box">⚠️ Speed matters here. The average attacker spends <strong>207 days</strong> inside a network before being detected. The faster you identify, the less damage they do.</div>` },
+      { heading: "Step 3 & 4 — Containment & Eradication", html: `<p><strong>Step 3: Containment</strong></p><p>Once you've confirmed an incident, you need to stop it from spreading — like closing a door to prevent a fire from reaching other rooms.</p><ul><li><strong>Short-term containment</strong> — isolate the affected system (disconnect from the network)</li><li><strong>Long-term containment</strong> — apply patches, change passwords, block malicious IPs</li></ul><p style="margin-top:0.7rem"><strong>Step 4: Eradication</strong></p><p>Remove the threat completely. This means:</p><ul><li>Deleting malware or backdoors the attacker installed</li><li>Removing compromised user accounts</li><li>Patching the vulnerability that was exploited</li></ul><div class="tip-box">💡 Don't skip straight to recovery — if you haven't fully eradicated the threat, the attacker may still have a foothold.</div>` },
+      { heading: "Step 5 & 6 — Recovery & Lessons Learned", html: `<p><strong>Step 5: Recovery</strong></p><p>Restore systems to normal operations — carefully. This includes:</p><ul><li>Restoring from clean backups</li><li>Monitoring systems closely for signs of re-infection</li><li>Gradually bringing systems back online</li></ul><p style="margin-top:0.7rem"><strong>Step 6: Lessons Learned</strong></p><p>This is the most overlooked step — and one of the most valuable. After every incident, the team meets to ask:</p><ul><li>What happened and what was the root cause?</li><li>What did we do well? What could we improve?</li><li>How do we update our playbooks to handle this better next time?</li></ul><div class="tip-box">💡 A post-incident report (PIR) is the formal document that captures all of this. Writing clear PIRs is a key skill for any SOC analyst.</div>` },
+      { heading: "IR in the Real World", html: `<p>In a real SOC, incident response follows structured playbooks for specific attack types — ransomware, phishing, insider threats, DDoS, and more. Each playbook tells the analyst exactly what steps to take.</p><p>Tools commonly used during IR:</p><ul><li>🔵 <strong>SIEM</strong> (e.g., Microsoft Sentinel) — detect and investigate alerts</li><li>🛡️ <strong>EDR</strong> (e.g., Microsoft Defender) — isolate endpoints, hunt for malware</li><li>📋 <strong>Ticketing systems</strong> — track every action taken during the incident</li><li>🔍 <strong>Forensic tools</strong> — preserve evidence and analyze attack timelines</li></ul><div class="warn-box">⚠️ In a real incident, every action must be documented. "If it wasn't written down, it didn't happen" — this matters legally and for future prevention.</div>` }
+    ]
+  },
+  hackermind: {
+    title: "How Hackers Think", subtitle: "Understanding the attacker mindset to defend better",
+    icon: "🧠", duration: "7 min", level: "Advanced", levelClass: "warn",
+    desc: "Learn how attackers plan and execute cyberattacks — so you can think like a defender who knows what's coming.",
+    lessons: [
+      { heading: "Why You Need to Think Like an Attacker", html: `<p>The best defenders understand how attackers think. If you only know how to set up defenses, you're always reacting. If you understand how attacks are planned and executed, you can anticipate them.</p><p>This isn't about learning to hack — it's about understanding the <strong>attacker's mindset</strong> so you can close the gaps before they're exploited.</p><div class="tip-box">💡 This is why "red team vs. blue team" exercises exist in cybersecurity. The red team (attackers) tries to break in, the blue team (defenders) tries to stop them. Both make each other better.</div>` },
+      { heading: "The Cyber Kill Chain", html: `<p>The Cyber Kill Chain is a framework developed by Lockheed Martin that describes the 7 stages of a cyberattack. Understanding these stages helps defenders know <em>where</em> to interrupt an attack.</p><ul><li>🔍 <strong>1. Reconnaissance</strong> — attacker researches the target (social media, job postings, public records)</li><li>🛠️ <strong>2. Weaponization</strong> — creates a malware payload or phishing email</li><li>📧 <strong>3. Delivery</strong> — sends the payload (phishing email, malicious USB, watering hole)</li><li>💥 <strong>4. Exploitation</strong> — the vulnerability is triggered and code executes</li><li>🔧 <strong>5. Installation</strong> — malware installs itself, creates a backdoor</li><li>📡 <strong>6. Command & Control</strong> — attacker connects remotely to the compromised system</li><li>🎯 <strong>7. Actions on Objectives</strong> — data theft, ransomware deployment, lateral movement</li></ul><div class="warn-box">⚠️ Defenders who interrupt the kill chain at stage 1 or 2 save the most damage. The later the stage, the more costly the breach.</div>` },
+      { heading: "Common Attack Techniques", html: `<p>Here are the techniques attackers use most often — and what defenders look for:</p><ul><li>🎣 <strong>Phishing</strong> — still the #1 entry point. A convincing fake email is cheaper and more effective than any technical exploit.</li><li>🔑 <strong>Credential stuffing</strong> — using stolen username/password lists from data breaches to log into accounts (this is why unique passwords matter).</li><li>⬆️ <strong>Privilege escalation</strong> — once inside, attackers look for ways to gain admin-level access to do more damage.</li><li>↔️ <strong>Lateral movement</strong> — moving from one system to others inside the network to find valuable data.</li><li>💾 <strong>Ransomware</strong> — encrypting files and demanding payment. Often deployed only after the attacker has spent weeks inside the network.</li></ul>` },
+      { heading: "How Defenders Use This Knowledge", html: `<p>Knowing how attackers think directly improves defensive work:</p><ul><li>✅ <strong>Threat hunting</strong> — proactively search logs for signs of reconnaissance or lateral movement before an alert fires</li><li>✅ <strong>Detection rules</strong> — write SIEM rules that catch kill chain behaviors (e.g., unusual login times, large data transfers)</li><li>✅ <strong>Vulnerability management</strong> — prioritize patching the vulnerabilities attackers are actively exploiting</li><li>✅ <strong>Security awareness</strong> — train users to recognize phishing because delivery is the attacker's most reliable step</li></ul><div class="tip-box">💡 <strong>MITRE ATT&CK</strong> is a free, globally recognized knowledge base of real attacker tactics and techniques. SOC analysts use it daily to map alerts to known attack patterns.</div>` }
+    ]
+  },
+  scams: {
+    title: "Online Scams", subtitle: "Recognize the most common fraud tactics used today",
+    icon: "🚨", duration: "6 min", level: "Important", levelClass: "warn",
+    desc: "Recognize common scam tactics — fake tech support, romance scams, lottery fraud, and more.",
+    lessons: [
+      { heading: "Tech Support Scams", html: `<p>You get a pop-up or phone call claiming your computer has a virus. The "technician" asks for remote access or payment to "fix" the problem.</p><p><strong>The truth:</strong> Microsoft, Apple, and antivirus companies never contact you this way.</p><ul><li>🚫 Never give remote access to someone who contacts you first</li><li>🚫 Never pay with gift cards — no legitimate company asks for this</li><li>✅ If unsure, hang up and call the official number from their real website</li></ul><div class="warn-box">⚠️ Gift cards are always a scam red flag. Any demand to pay with iTunes, Google Play, or Walmart gift cards is fraudulent.</div>` },
+      { heading: "Lottery & Prize Scams", html: `<p>"Congratulations! You've won $10,000!" — but you have to pay a fee or provide bank details to "claim" it.</p><p>Rule to remember: <strong>If you didn't enter it, you didn't win it.</strong></p><ul><li>🚫 You never have to pay to receive a legitimate prize</li><li>🚫 Real lotteries don't contact winners by email or social media DM</li><li>✅ If it sounds too good to be true, it is</li></ul>` },
+      { heading: "Romance Scams", html: `<p>A stranger builds a relationship over weeks or months, then asks for money — usually due to an "emergency" (medical bill, travel, stuck overseas).</p><ul><li>🚩 They're always too perfect and very attentive early on</li><li>🚩 They refuse or have excuses to video call</li><li>🚩 They ask for money via wire transfer, crypto, or gift cards</li><li>✅ Reverse image search their photos to check if they're stolen</li></ul><div class="tip-box">💡 Americans lost over $1.3 billion to romance scams in 2022 — more than any other fraud type.</div>` },
+      { heading: "How To Protect Yourself", html: `<p>A simple checklist to avoid falling for online scams:</p><ul><li>✅ <strong>Slow down</strong> — scammers create urgency to stop you from thinking clearly</li><li>✅ <strong>Verify independently</strong> — look up official contact info and call back yourself</li><li>✅ <strong>Never pay with gift cards or wire transfer</strong> — these are untraceable</li><li>✅ <strong>Talk to someone you trust</strong> — a friend or family member can offer perspective</li><li>✅ <strong>Report scams</strong> — to the FTC at ReportFraud.ftc.gov</li></ul><div class="tip-box">💡 <strong>Golden Rule:</strong> Any unexpected contact asking for money, personal info, or urgent action is suspicious until proven otherwise.</div>` }
+    ]
+  }
+};
+
+const QUIZ_QUESTIONS = [
+  { q: "What is phishing?", options: ["A type of malware that encrypts files","A fake message designed to steal your personal info","A secure way to send emails","A tool for scanning for viruses"], correct: 1, exp: "Phishing is when criminals send fake messages pretending to be trusted sources to trick you into giving up passwords or personal data." },
+  { q: "You get an email saying 'Your bank account will be closed in 24 hours! Click here immediately.' What should you do?", options: ["Click the link and log in right away","Call the bank using the number on the back of your card","Reply to the email asking for more info","Forward it to friends to warn them"], correct: 1, exp: "Never click links in urgent emails. Instead, call your bank directly using the number printed on your card or their official website." },
+  { q: "A pop-up says your computer has a virus and tells you to call a number. What is this?", options: ["A real security warning from Microsoft","A helpful antivirus alert","A tech support scam","An update notification"], correct: 2, exp: "Microsoft, Apple, and antivirus companies never display pop-ups asking you to call a phone number. This is always a scam." },
+  { q: "Which of the following is a red flag in an email?", options: ["Your full name in the greeting","A link to the company's official website","Spelling errors and 'Dear Customer'","An email from a verified domain"], correct: 2, exp: "Generic greetings like 'Dear Customer' and spelling errors are common signs of phishing emails." },
+  { q: "Someone asks you to pay for a prize you 'won' using gift cards. What do you do?", options: ["Pay with iTunes cards — it's safer","Send half first to see if it's real","Refuse — gift card payment requests are always scams","Ask for their bank details instead"], correct: 2, exp: "Legitimate businesses and prizes never require gift card payment. This is always fraudulent." },
+  { q: "What does two-factor authentication (2FA) do?", options: ["Doubles your password length","Requires a second verification step (like a code to your phone)","Automatically changes your password","Encrypts your emails"], correct: 1, exp: "2FA adds a second layer — even if someone steals your password, they can't log in without the code sent to your phone." },
+  { q: "An online match you've been talking to for 2 months has never video called and now needs $500 for a medical emergency. This is likely:", options: ["A genuine emergency — you should help","A romance scam","A misunderstanding","Normal — many people are camera shy"], correct: 1, exp: "Refusing to video call and requesting money for emergencies are classic signs of a romance scam." },
+  { q: "What should you do if you accidentally clicked a phishing link and entered your password?", options: ["Wait and see if anything happens","Change your password immediately and enable 2FA","Delete the email and forget about it","Only worry if you entered your credit card"], correct: 1, exp: "Act fast — change your password on that account and every site where you use the same password, then enable 2FA." },
+  { q: "What is the correct order of the first three steps in Incident Response?", options: ["Identification, Containment, Preparation","Preparation, Identification, Containment","Containment, Eradication, Recovery","Eradication, Identification, Preparation"], correct: 1, exp: "The 6 steps are: Preparation → Identification → Containment → Eradication → Recovery → Lessons Learned." },
+  { q: "In the Cyber Kill Chain, what stage comes AFTER 'Delivery'?", options: ["Reconnaissance","Weaponization","Exploitation","Command & Control"], correct: 2, exp: "The Kill Chain order is: Reconnaissance → Weaponization → Delivery → Exploitation → Installation → Command & Control → Actions on Objectives." },
+  { q: "What is 'lateral movement' in a cyberattack?", options: ["Sending phishing emails to multiple targets","Moving from one compromised system to others inside the network","Escalating privileges to admin level","Encrypting files for ransom"], correct: 1, exp: "Lateral movement is when an attacker uses their initial foothold to move to other systems inside the network, searching for valuable data or higher-value targets." },
+  { q: "What is the purpose of the 'Lessons Learned' step in Incident Response?", options: ["To punish employees who made mistakes","To review what happened and improve future response","To notify the media about the breach","To restore systems from backup"], correct: 1, exp: "Lessons Learned (also called a Post-Incident Review) is about improving: understanding the root cause, what was done well, and updating playbooks for next time." }
+];
+
+const TIPS = [
+  { icon: "🔑", text: "Use a different password for every website. A password manager makes this easy and free." },
+  { icon: "📱", text: "Enable two-factor authentication on your email and bank — it stops most account takeovers cold." },
+  { icon: "🔍", text: "Before clicking a link in any email, hover over it first to see the real destination URL." },
+  { icon: "🎣", text: "Phishing emails often create a sense of urgency. When in doubt, go directly to the website yourself." },
+  { icon: "💳", text: "Gift card payments are always a scam. No legitimate business, government agency, or prize requires them." },
+  { icon: "🔒", text: "Keep your phone, computer, and apps updated — updates often patch critical security vulnerabilities." },
+  { icon: "🌐", text: "On public Wi-Fi, avoid logging into bank accounts or entering passwords. Use a VPN if you must." },
+  { icon: "📧", text: "Check the sender's email address carefully — scammers use addresses like 'support@amaz0n-help.net'." },
+  { icon: "🧠", text: "Slow down when something feels urgent. Scammers rely on panic. Taking 5 minutes can save thousands." },
+  { icon: "🛡️", text: "You can check if your email was in a data breach at HaveIBeenPwned.com — it's free and official." }
+];
+
+const GLOSSARY = [
+  { term: "Phishing", def: "A cyberattack using fake emails, texts, or websites to trick people into revealing passwords or financial info." },
+  { term: "Malware", def: "Malicious software designed to damage, disrupt, or gain unauthorized access to a computer system. Includes viruses, ransomware, and spyware." },
+  { term: "Ransomware", def: "A type of malware that encrypts your files and demands payment (a 'ransom') to restore access." },
+  { term: "Two-Factor Authentication (2FA)", def: "A security method requiring two forms of verification — usually your password plus a code sent to your phone." },
+  { term: "Social Engineering", def: "Psychological manipulation of people to divulge confidential information or perform actions that help attackers." },
+  { term: "VPN (Virtual Private Network)", def: "A service that encrypts your internet connection, hiding your activity from hackers and your internet provider." },
+  { term: "Data Breach", def: "A security incident where sensitive information is accessed, stolen, or exposed without authorization." },
+  { term: "Firewall", def: "A security system that monitors and controls network traffic based on security rules — a barrier between trusted and untrusted networks." },
+  { term: "Spyware", def: "Software that secretly monitors your activity and sends information to a third party without your knowledge." },
+  { term: "Identity Theft", def: "When someone steals your personal information (like your SSN or credit card) to commit fraud in your name." },
+  { term: "Password Manager", def: "An app that securely stores and generates strong, unique passwords for all your accounts." },
+  { term: "Zero-Day", def: "A software vulnerability unknown to the vendor — attackers exploit it before a patch is available." },
+  { term: "Multi-Factor Authentication (MFA)", def: "Similar to 2FA, but may require more than two forms of identity verification for access." },
+  { term: "Smishing", def: "Phishing conducted via SMS text messages — fake texts designed to steal your info or install malware." },
+  { term: "Vishing", def: "Voice phishing — scam phone calls impersonating banks, government agencies, or tech support to steal information." },
+  { term: "Encryption", def: "The process of converting data into a coded format so only authorized parties can read it." },
+  { term: "Spoofing", def: "Faking the origin of communication — e.g., making an email appear to come from a trusted sender or company." },
+  { term: "Keylogger", def: "Software that records every keystroke you make — capturing passwords, credit card numbers, and messages." }
+];
+
+// ══════════════════════════════════════════════
+// STATE & STORAGE
+// ══════════════════════════════════════════════
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('cybersafe_state') || '{}'); } catch(e) { return {}; }
+}
+function saveState(s) { try { localStorage.setItem('cybersafe_state', JSON.stringify(s)); } catch(e) {} }
+function getState() { return loadState(); }
+function markCourseComplete(id) {
+  const s = loadState(); s.completed = s.completed || {};
+  s.completed[id] = true; saveState(s);
+}
+function markQuizScore(score) {
+  const s = loadState(); s.quizScore = score; s.quizDate = new Date().toLocaleDateString(); saveState(s);
+}
+function getUserName() { return loadState().userName || ''; }
+function setUserName(n) { const s = loadState(); s.userName = n; saveState(s); }
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+let currentPage = 'home';
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById('nav-' + id);
+  if (el) el.classList.add('active');
+  currentPage = id;
+  window.scrollTo(0, 0);
+  if (id === 'quiz') initQuiz();
+  if (id === 'cert') renderCert();
+  if (id === 'home') renderDashboard();
+  if (id === 'courses' || id === 'home') renderCourseGrids();
+  if (id === 'glossary') renderGlossary();
+}
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+  try { localStorage.setItem('cybersafe_theme', newTheme); } catch(e) {}
+}
+(function applyTheme() {
+  try {
+    const t = localStorage.getItem('cybersafe_theme');
+    if (t) { document.documentElement.setAttribute('data-theme', t); document.getElementById('theme-icon').textContent = t === 'dark' ? '🌙' : '☀️'; }
+  } catch(e) {}
+})();
+
+// ══════════════════════════════════════════════
+// ANIMATED STATS
+// ══════════════════════════════════════════════
+function animateStats() {
+  document.querySelectorAll('.stat-num[data-target]').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const isFloat = target % 1 !== 0;
+    const isLarge = target > 1000;
+    let start = 0; const duration = 1800;
+    const startTime = performance.now();
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const val = target * eased;
+      if (isFloat) el.textContent = prefix + val.toFixed(1) + suffix;
+      else if (isLarge) el.textContent = prefix + formatLargeNum(Math.round(val)) + suffix;
+      else el.textContent = prefix + Math.round(val) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+function formatLargeNum(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  return n.toLocaleString();
+}
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateStats(); statsObserver.disconnect(); } });
+}, { threshold: 0.3 });
+document.addEventListener('DOMContentLoaded', () => {
+  const s = document.querySelector('.stats');
+  if (s) statsObserver.observe(s);
+});
+
+// ══════════════════════════════════════════════
+// TIP OF THE DAY
+// ══════════════════════════════════════════════
+function renderTip() {
+  const idx = new Date().getDate() % TIPS.length;
+  const tip = TIPS[idx];
+  document.getElementById('tip-of-day-wrap').innerHTML = `
+    <div class="tip-card">
+      <div class="tip-icon">${tip.icon}</div>
+      <div class="tip-body">
+        <strong>Tip of the Day</strong>
+        <p>${tip.text}</p>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
+function renderDashboard() {
+  const s = getState();
+  const completed = s.completed || {};
+  const total = Object.keys(COURSES).length;
+  const done = Object.keys(completed).length;
+  const quizScore = s.quizScore !== undefined ? `${s.quizScore}/${QUIZ_QUESTIONS.length}` : '—';
+  document.getElementById('dash-cards').innerHTML = `
+    <div class="dash-card"><div class="dc-label">Courses Completed</div><div class="dc-val">${done}/${total}</div><div class="dc-sub">${done === total ? '🎉 All done!' : `${total - done} remaining`}</div></div>
+    <div class="dash-card"><div class="dc-label">Best Quiz Score</div><div class="dc-val">${quizScore}</div><div class="dc-sub">${s.quizDate ? 'Last taken ' + s.quizDate : 'Not taken yet'}</div></div>
+    <div class="dash-card"><div class="dc-label">Certificate</div><div class="dc-val">${done === total && s.quizScore !== undefined ? '✅' : '🔒'}</div><div class="dc-sub" style="cursor:pointer;color:var(--accent)" onclick="showPage('cert')">${done === total && s.quizScore !== undefined ? 'View certificate' : 'Complete all to unlock'}</div></div>`;
+}
+
+// ══════════════════════════════════════════════
+// COURSE GRIDS
+// ══════════════════════════════════════════════
+function renderCourseGrids() {
+  const s = getState(); const completed = s.completed || {};
+  const html = Object.entries(COURSES).map(([id, c]) => {
+    const done = completed[id];
+    return `<div class="course-card${done ? ' completed' : ''}" onclick="startCourse('${id}')">
+      ${done ? '<div class="completed-ribbon">✓ Completed</div>' : ''}
+      <div class="course-icon">${c.icon}</div>
+      <h3>${c.title}</h3>
+      <p>${c.desc}</p>
+      <div class="course-meta"><span>⏱ ${c.duration}</span><span class="badge ${c.levelClass}">${c.level}</span></div>
+    </div>`;
+  }).join('');
+  const g1 = document.getElementById('home-courses-grid');
+  const g2 = document.getElementById('courses-grid');
+  if (g1) g1.innerHTML = html;
+  if (g2) g2.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════
+// COURSE VIEWER
+// ══════════════════════════════════════════════
+let currentCourse = null, currentLesson = 0;
+function startCourse(id) {
+  currentCourse = id; currentLesson = 0;
+  showPage('course'); renderLesson();
+}
+function renderLesson() {
+  const c = COURSES[currentCourse];
+  const lessons = c.lessons;
+  const lesson = lessons[currentLesson];
+  document.getElementById('course-title').textContent = c.title;
+  document.getElementById('course-subtitle').textContent = c.subtitle;
+  const pct = Math.round(((currentLesson + 1) / lessons.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('course-lessons').innerHTML = `
+    <div class="lesson">
+      <h3>Lesson ${currentLesson + 1} of ${lessons.length}: ${lesson.heading}</h3>
+      ${lesson.html}
+    </div>`;
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  prevBtn.style.display = currentLesson > 0 ? 'inline-flex' : 'none';
+  const isLast = currentLesson === lessons.length - 1;
+  nextBtn.textContent = isLast ? '🎉 Complete Course' : 'Next →';
+  nextBtn.onclick = isLast ? finishCourse : nextLesson;
+  // Share links
+  const text = encodeURIComponent(`I just completed the "${c.title}" course on CyberSafe! 🛡️ Staying safe online matters.`);
+  document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${text}`;
+  document.getElementById('share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://cybersafe.example.com')}`;
+}
+function nextLesson() { if (currentLesson < COURSES[currentCourse].lessons.length - 1) { currentLesson++; renderLesson(); window.scrollTo(0,0); } }
+function prevLesson() { if (currentLesson > 0) { currentLesson--; renderLesson(); window.scrollTo(0,0); } }
+function finishCourse() {
+  markCourseComplete(currentCourse);
+  renderCourseGrids();
+  renderDashboard();
+  showPage('courses');
+  setTimeout(() => {
+    const s = getState();
+    const allDone = Object.keys(COURSES).every(id => s.completed && s.completed[id]);
+    if (allDone) {
+      if (confirm('🎉 You\'ve completed all courses! Ready to take the quiz and earn your certificate?')) showPage('quiz');
+    }
+  }, 200);
+}
+function copyShareLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!')).catch(() => alert('Copy: ' + window.location.href));
+}
+
+// ══════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════
+let quizIndex = 0, quizScore = 0, quizAnswered = false;
+function initQuiz() { quizIndex = 0; quizScore = 0; quizAnswered = false; renderQuestion(); }
+function renderQuestion() {
+  if (quizIndex >= QUIZ_QUESTIONS.length) { renderScore(); return; }
+  quizAnswered = false;
+  const q = QUIZ_QUESTIONS[quizIndex];
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="question-card">
+      <div class="q-number">Question ${quizIndex + 1} of ${QUIZ_QUESTIONS.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">${q.options.map((o,i) => `<button class="option" onclick="selectAnswer(${i})" id="opt-${i}">${o}</button>`).join('')}</div>
+      <div id="feedback"></div>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn" id="btn-quiz-next" onclick="nextQuestion()" style="display:none">
+        ${quizIndex === QUIZ_QUESTIONS.length - 1 ? 'See Results 🎉' : 'Next Question →'}
+      </button>
+    </div>`;
+}
+function selectAnswer(i) {
+  if (quizAnswered) return; quizAnswered = true;
+  const q = QUIZ_QUESTIONS[quizIndex];
+  if (q.correct === i) quizScore++;
+  document.querySelectorAll('.option').forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === q.correct) btn.classList.add('correct');
+    else if (idx === i && q.correct !== i) btn.classList.add('wrong');
+  });
+  document.getElementById('feedback').innerHTML = `<div class="feedback ${q.correct === i ? 'correct' : 'wrong'}">${q.correct === i ? '✅ Correct! ' : '❌ Not quite. '}${q.exp}</div>`;
+  document.getElementById('btn-quiz-next').style.display = 'inline-flex';
+}
+function nextQuestion() { quizIndex++; renderQuestion(); window.scrollTo(0,0); }
+function renderScore() {
+  markQuizScore(quizScore);
+  renderDashboard();
+  const pct = Math.round((quizScore / QUIZ_QUESTIONS.length) * 100);
+  const msg = pct >= 80 ? "🏆 Excellent! You're well-prepared to stay safe online." : pct >= 50 ? "📚 Good effort! Review the courses to strengthen your knowledge." : "🔄 Keep learning! The courses will make a big difference.";
+  const s = getState();
+  const allDone = Object.keys(COURSES).every(id => s.completed && s.completed[id]);
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="score-card">
+      <div class="score-big">${quizScore}/${QUIZ_QUESTIONS.length}</div>
+      <div class="score-label">${pct}% correct</div>
+      <div class="score-msg">${msg}</div>
+      <div style="display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="initQuiz()">Retake Quiz</button>
+        <button class="btn btn-outline" onclick="showPage('courses')">Review Courses</button>
+        ${allDone ? '<button class="btn btn-green" onclick="showPage(\'cert\')">🎓 Get Certificate</button>' : ''}
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// CERTIFICATE
+// ══════════════════════════════════════════════
+function renderCert() {
+  const s = getState();
+  const completed = s.completed || {};
+  const allCourses = Object.keys(COURSES).every(id => completed[id]);
+  const hasQuiz = s.quizScore !== undefined;
+  const courseIds = Object.keys(COURSES);
+
+  if (!allCourses || !hasQuiz) {
+    document.getElementById('cert-body').innerHTML = `
+      <div class="cert-locked">
+        <h2>🎓 Certificate of Completion</h2>
+        <p>Complete all 3 courses and the quiz to unlock your certificate.</p>
+        <div class="checklist">
+          ${courseIds.map(id => `<div class="checklist-item ${completed[id] ? 'done' : ''}">
+            <span>${completed[id] ? '✅' : '⭕'}</span> ${COURSES[id].title}
+          </div>`).join('')}
+          <div class="checklist-item ${hasQuiz ? 'done' : ''}">
+            <span>${hasQuiz ? '✅' : '⭕'}</span> Knowledge Quiz
+          </div>
+        </div>
+        <button class="btn" onclick="showPage('courses')">Continue Learning</button>
+      </div>`;
+    return;
+  }
+
+  let name = getUserName();
+  if (!name) {
+    name = prompt('Enter your name for the certificate:') || 'Learner';
+    setUserName(name);
+  }
+  const date = s.quizDate || new Date().toLocaleDateString();
+  const score = s.quizScore;
+
+  document.getElementById('cert-body').innerHTML = `
+    <div class="cert-frame" id="cert-print-area">
+      <div class="cert-watermark">🛡️</div>
+      <div class="cert-logo">🛡️</div>
+      <div class="cert-org">CyberSafe Awareness Training</div>
+      <div class="cert-presents">This certifies that</div>
+      <div class="cert-name">${name}</div>
+      <div class="cert-title-line">Certificate of Completion</div>
+      <div class="cert-body">Has successfully completed the CyberSafe Cybersecurity Awareness curriculum, demonstrating knowledge of online threats, phishing prevention, and scam awareness.</div>
+      <div class="cert-badges">
+        ${courseIds.map(id => `<div class="cert-badge"><div class="cb-icon">${COURSES[id].icon}</div><div class="cb-label">${COURSES[id].title}</div></div>`).join('')}
+        <div class="cert-badge"><div class="cb-icon">🧠</div><div class="cb-label">Quiz: ${score}/${QUIZ_QUESTIONS.length}</div></div>
+      </div>
+      <div class="cert-date">Awarded on ${date}</div>
+    </div>
+    <div class="cert-actions">
+      <button class="btn" onclick="window.print()">🖨️ Print Certificate</button>
+      <button class="btn btn-outline" onclick="changeName()">✏️ Change Name</button>
+    </div>`;
+}
+function changeName() { setUserName(''); renderCert(); }
+
+// ══════════════════════════════════════════════
+// GLOSSARY
+// ══════════════════════════════════════════════
+function renderGlossary(filter = '') {
+  const filtered = GLOSSARY.filter(g =>
+    !filter || g.term.toLowerCase().includes(filter.toLowerCase()) || g.def.toLowerCase().includes(filter.toLowerCase())
+  ).sort((a,b) => a.term.localeCompare(b.term));
+  document.getElementById('glossary-list').innerHTML = filtered.length
+    ? filtered.map(g => `<div class="glossary-item"><dt>${g.term}</dt><dd>${g.def}</dd></div>`).join('')
+    : '<p style="color:var(--muted);padding:1rem">No terms found.</p>';
+}
+function filterGlossary(v) { renderGlossary(v); }
+
+// ══════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════
+const SEARCH_INDEX = [
+  ...Object.entries(COURSES).flatMap(([id, c]) =>
+    c.lessons.map(l => ({ title: l.heading, subtitle: c.title, action: () => startCourse(id), tag: '📚 Course' }))
+  ),
+  ...GLOSSARY.map(g => ({ title: g.term, subtitle: g.def.substring(0, 60) + '…', action: () => showPage('glossary'), tag: '📖 Glossary' }))
+];
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('search-input').focus(), 50);
+}
+function closeSearch(e) {
+  if (!e || e.target === document.getElementById('search-overlay')) {
+    document.getElementById('search-overlay').classList.remove('open');
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-results').innerHTML = '<div class="search-empty">Start typing to search…</div>';
+  }
+}
+function runSearch(q) {
+  if (!q.trim()) { document.getElementById('search-results').innerHTML = '<div class="search-empty">Start typing to search…</div>'; return; }
+  const results = SEARCH_INDEX.filter(item =>
+    item.title.toLowerCase().includes(q.toLowerCase()) || item.subtitle.toLowerCase().includes(q.toLowerCase())
+  ).slice(0, 8);
+  document.getElementById('search-results').innerHTML = results.length
+    ? results.map((r, i) => `<div class="search-result-item" onclick="searchGo(${i})"><strong>${r.tag} — ${r.title}</strong><span>${r.subtitle}</span></div>`).join('')
+    : '<div class="search-empty">No results found.</div>';
+  window._searchResults = results;
+}
+function searchGo(i) {
+  window._searchResults[i].action();
+  document.getElementById('search-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSearch();
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+});
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+renderTip();
+renderDashboard();
+renderCourseGrids();
+renderGlossary();
+</script>
+</body>
+</html>
